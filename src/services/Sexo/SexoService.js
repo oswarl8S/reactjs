@@ -29,7 +29,7 @@ class SexoService {
 	static create = (form) => {
 		let params = {
 			id_cat_sexo: null,
-			cat_sexo: form.cat_sexo,
+			sexo: form.sexo,
 			activo: form.activo,
 		};
 		return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ class SexoService {
 	static update = (form) => {
 		let params = {
 			id_cat_sexo: form.id_cat_sexo,
-			cat_sexo: form.cat_sexo,
+			sexo: form.sexo,
 			activo: form.activo,
 		};
 		return new Promise((resolve, reject) => {
