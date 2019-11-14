@@ -1,0 +1,8 @@
+Para los iconos:
+https://material-ui.com/components/material-icons/
+
+Para el appbar:
+https://material-ui.com/components/app-bar/#app-bar
+
+Boton flotante:
+https://material-ui.com/components/buttons/#floating-action-buttons
