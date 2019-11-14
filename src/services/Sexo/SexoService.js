@@ -1,4 +1,4 @@
-import {HttpRequest} from '../../settings/HttpRequest/HttpRequest';
+import {HttpRequest} from '../../settings/Libs/Libs';
 
 class SexoService {
 	

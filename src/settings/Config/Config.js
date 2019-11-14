@@ -7,8 +7,8 @@ let a, s;
 switch (hostname) {
 	case 'localhost':
 	case '127.0.0.1':
-		a = 'http://localhost/api_login/public/api/';
-		s = 'http://localhost/api_login/public/';
+		a = 'http://localhost/laravel/public/api/';
+		s = 'http://localhost/laravel/public/';
 		break;
 	default:
 		a = protocol + '//api' + hostname + '/public/api/';
@@ -18,7 +18,7 @@ switch (hostname) {
 const api = a;
 const src = s;
 
-const basename = hostname === 'localhost' ? (Number(port) === 3000 || Number(port) === 3001 || Number(port) === 3002 || Number(port) === 3003 ? '' : '/puntov/build/') : '/';
+const basename = hostname === 'localhost' ? (Number(port) === 3000 || Number(port) === 3001 || Number(port) === 3002 || Number(port) === 3003 ? '' : '/reactjs/build/') : '/';
 
 export const CONFIG = {
 	prefix: 'reactjs',

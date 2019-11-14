@@ -1,8 +1,8 @@
 import React, {Component, Fragment} from "react";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import {FileBase64} from "../settings/FileBase64/FileBase64";
-import {FieldsJs} from "../settings/General/General";
+import {FileBase64} from "../settings/Libs/Libs";
+import {FieldsJs} from "../settings/Libs/Libs";
 import ModalImage from "./ModalImage";
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";

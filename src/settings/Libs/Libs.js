@@ -1,3 +1,9 @@
+import {CONFIG} from '../Config/Config';
+
+import {withRouter} from "react-router-dom";
+import {reactLocalStorage} from 'reactjs-localstorage';
+import axios from 'axios/index';
+
 export const FieldsJs = {
 	timeout: null,
 	TimePromise: function (time, resolve, reject) {
@@ -560,7 +566,6 @@ export function str_search(subject, search) {
 	return -1 < subject.toString().indexOf(search);
 }
 
-
 export function FloatSolo(e) {
 	let key = e.keyCode || e.which;
 	let tecla = String.fromCharCode(key).toLowerCase();
@@ -630,50 +635,557 @@ export function MinMax(e, min, max) {
 	}
 }
 
-/**
- * @return {boolean}
- */
 export function isEnter(e) {
 	let key = e.keyCode || e.which;
 	return key === 13;
 }
 
-/**
- * @return {string}
- */
-export function CadenaDomicilio(datos) {
-	if (typeof datos !== "object") {
-		return 'No se ha configurado un domicilio';
+export const FileBase64 = {
+	Base64: (element, formatos, MegaByte) => {
+		return new Promise((resolve, reject) => {
+			let files = {};
+			let archivos = element.files;
+			let flag_error = false;
+			let mensaje = "";
+			if (archivos.length <= 0) {
+				flag_error = true;
+				mensaje = "No has seleccionado un archivos";
+			} else {
+				let type = null;
+				if (!archivos[0].type) {
+					if (archivos[0].name) {
+						if (str_search(archivos[0].name, '.')) {
+							let arc = archivos[0].name.split('.');
+							type = "application/" + arc[arc.length - 1]; // Funcionalidad para los archivos .rar
+						}
+					}
+				}
+				files = {
+					name: archivos[0].name,
+					size: archivos[0].size,
+					type: archivos[0].type || type,
+					lastModified: archivos[0].lastModified,
+					lastModifiedDate: archivos[0].lastModifiedDate,
+					webkitRelativePath: archivos[0].webkitRelativePath
+				};
+				if (files.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+					files.type = "application/xlsx";
+				}
+				if (files.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+					files.type = "application/docx";
+				}
+				if (files.type === "text/plain") {
+					files.type = "text/txt";
+				}
+				if (FieldsJs.inArray(formatos, files.type) === false) {
+					flag_error = true;
+					mensaje = "El formato del archivo seleccionado no es válido";
+				}
+				if (!(MegaByte > 0)) {
+					let Cfg = ReactLocalStorageService.get('Cfg') || {};
+					if (Number(Cfg.archivo_maximo_megas) > 0) {
+						MegaByte = Number(Cfg.archivo_maximo_megas); // Megas por default del webservice
+					} else {
+						MegaByte = 5.5; // Por default 5.5 megas
+					}
+				}
+				let Byte = MegaByte * 1e+6;
+				if (files.size > Byte) {
+					flag_error = true;
+					mensaje = "El tamaño máximo del archivo no debe ser mayor a " + Math.floor(MegaByte) + "MB, el tamaño del archivo que intenta seleccionar es de " + (Math.floor(files.size / 1e+6)) + "MB a " + (Math.ceil(files.size / 1e+6)) + "MB";
+				}
+			}
+			if (flag_error === false) {
+				let fileReader = new FileReader();
+				fileReader.onabort = (r) => {
+				};
+				fileReader.onerror = (r) => {
+				};
+				fileReader.onload = (r) => {
+					let response = {
+						status: 200,
+						mensaje: "Archivo seleccionado con éxito",
+						name: files.name,
+						size: files.size,
+						type: files.type,
+						formato: files.type.split("/")[1],
+						lastModified: files.lastModified,
+						lastModifiedDate: files.lastModifiedDate,
+						webkitRelativePath: files.webkitRelativePath,
+						base64: r.target.result,
+						base64Tipo: r.target.result.split(",")[0],
+						tipo: r.target.result.split(",")[0],
+						archivo: r.target.result.split(",")[1]
+					};
+					console.log("FILE|=> onload(response): ", response);
+					resolve(response);
+				};
+				fileReader.onloadstart = (r) => {
+				};
+				fileReader.onloadend = (r) => {
+				};
+				fileReader.onprogress = (r) => {
+				};
+				fileReader.readAsDataURL(archivos[0]);
+			} else {
+				if (document.getElementById(element.id)) {
+					document.getElementById(element.id).value = "";
+				}
+				let error = {
+					status: 400,
+					mensaje: mensaje,
+					name: files.name,
+					size: files.size,
+					type: files.type,
+					formato: files.type.split("/")[1],
+					lastModified: files.lastModified,
+					lastModifiedDate: files.lastModifiedDate,
+					webkitRelativePath: files.webkitRelativePath,
+					base64: null,
+					base64Tipo: null,
+					tipo: null,
+					archivo: null
+				};
+				console.log("FILE|=> onload(error): ", error);
+				reject(error);
+			}
+		});
 	}
-	var direccion = "";
-	
-	if (FieldsJs.Field(datos.calle) === true) {
-		direccion = direccion + datos.calle + " ";
+};
+
+const imprimir = (strung, obj, type) => {
+	let dato = [];
+	if (type) {
+		dato = [
+			"%c%s%c%s\n",
+			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
+			" " + strung,
+			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
+			obj
+		];
+		window.console.log(
+			dato[0],
+			dato[1],
+			dato[2],
+			dato[3],
+			JSON.stringify(dato[4], null, 2)
+		);
+	} else {
+		dato = [
+			"%c%s%c\n",
+			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
+			" " + strung,
+			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
+			obj
+		];
+		window.console.log(
+			dato[0],
+			dato[1],
+			dato[2],
+			dato[3],
+			dato[4]
+		);
 	}
+};
+
+export const ErrorMessageServerRequest = {
 	
-	if (FieldsJs.Field(datos.numero_exterior) === true) {
-		direccion = direccion + "no. ext. " + datos.numero_exterior + ", ";
+	GetMessage: (response, $PROMISSESUCCESS, $PROMISSEERROR) => {
+		var msgerrorserver = "";
+		
+		if (FieldsJs.Field(response.error) === true) {
+			if (!FieldsJs.Array(response.error)) {
+				var errorserver = response.error.split("::");
+				msgerrorserver += (errorserver[1] ? errorserver[1] : response.error) + " ";
+			}
+		}
+		
+		if (FieldsJs.Field(response.file) === true) {
+			var fileserver = response.file.split("/");
+			msgerrorserver += fileserver[fileserver.length - 1] + " ";
+		}
+		
+		if (FieldsJs.Field(response.line) === true) {
+			msgerrorserver += response.line;
+		}
+		
+		if (msgerrorserver) {
+			
+			let msg = "ADVERTENCIA: " + msgerrorserver;
+			
+			$PROMISSEERROR({
+				success: false,
+				codigo_api: 400,
+				mensaje: FieldsJs.FirstMayus(msg),
+				response: response
+			});
+			
+		} else {
+			
+			if (response.success === true) {
+				
+				let msg = FirstError(response);
+				
+				response.mensaje = FieldsJs.FirstMayus(msg);
+				
+				$PROMISSESUCCESS(response);
+				
+			} else {
+				
+				let msg = FirstError(response);
+				
+				$PROMISSEERROR({
+					success: false,
+					codigo_api: 400,
+					mensaje: FieldsJs.FirstMayus(msg),
+					response: response
+				});
+				
+			}
+		}
 	}
-	
-	if (FieldsJs.Field(datos.numero_interior) === true) {
-		direccion = direccion + "no. int. " + datos.numero_interior + " ";
+};
+
+export const HttpRequest = {
+	post: (ws, params, setting, time) => {
+		
+		if (!(time > 0)) {
+			time = 500;
+		}
+		
+		if (!FieldsJs.Array(setting)) {
+			setting = {};
+		}
+		
+		setting.authentication = (setting.authentication === true || setting.authentication === undefined || setting.authentication === null);
+		setting.spinner = (setting.spinner === true || setting.spinner === undefined || setting.spinner === null);
+		
+		let data = {};
+		
+		if (setting.authentication) {
+			let Usr = ReactLocalStorageService.get('Usr') || {};
+			data = {
+				token: Usr.token || '',
+				credenciales: {
+					id_usuario: Usr.id_usuario || '',
+					username: Usr.username || ''
+				},
+				data: {}
+			};
+		} else {
+			data = {
+				data: {}
+			};
+		}
+		
+		if (FieldsJs.Array(params)) {
+			for (let i in params) {
+				data.data[i] = params[i];
+			}
+		}
+		
+		if (CONFIG.debug) {
+			console.log("W E B S E R V I C E   &   D A T A [POST]:\n\n" + CONFIG.api + ws + "\n" + JSON.stringify(data, null, 2) + '\n');
+		}
+		
+		if (setting.spinner) {
+			showSpinner('spinner');
+		}
+		
+		return new Promise((resolve, reject) => {
+			axios.post(CONFIG.api + ws, data, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				timeout: undefined,
+			}).then(response => {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let respuesta = FieldsJs.Copy(response.data);
+				
+				if (CONFIG.debug) {
+					imprimir("R E S P O N S E [POST::" + ws + "]:\n", response.data, false);
+				}
+				
+				ErrorMessageServerRequest.GetMessage(respuesta, function (result) {
+					resolve(result);
+				}, function (error) {
+					reject(error);
+				});
+				
+			}).catch(function (error) {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let errors = {};
+				
+				if (!error) {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				} else {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				}
+				
+				if (CONFIG.debug) {
+					window.console.error(errors);
+				}
+				
+				reject(errors);
+				
+			});
+		});
+	},
+	get: (ws, params, setting, time) => {
+		
+		if (!(time > 0)) {
+			time = 500;
+		}
+		
+		if (!FieldsJs.Array(setting)) {
+			setting = {};
+		}
+		
+		setting.spinner = !(setting.spinner === false || setting.spinner === undefined || setting.spinner === null);
+		
+		let temp = [];
+		
+		if (FieldsJs.Array(params)) {
+			for (let i in params) {
+				temp.push(i + '=' + params[i]);
+			}
+		}
+		
+		let data = temp.join('&');
+		
+		let urls = '';
+		
+		if (FieldsJs.Field(data)) {
+			urls = CONFIG.api + ws + '?' + data;
+		} else {
+			urls = CONFIG.api + ws;
+		}
+		
+		if (CONFIG.debug) {
+			$cSuccess(urls);
+		}
+		
+		if (setting.spinner) {
+			showSpinner('spinner');
+		}
+		
+		return new Promise((resolve, reject) => {
+			axios.get(urls).then(response => {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let respuesta = response.data;
+				
+				if (CONFIG.debug) {
+					window.console.log("R E S P O N S E [GET::" + urls + "]:\n", FieldsJs.Copy(respuesta));
+				}
+				
+				ErrorMessageServerRequest.GetMessage(respuesta, function (result) {
+					resolve(result);
+				}, function (error) {
+					reject(error);
+				});
+				
+			}).catch(function (error) {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let errors = {};
+				
+				if (!error) {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				} else {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				}
+				
+				if (CONFIG.debug) {
+					window.console.error(errors);
+				}
+				
+				reject(errors);
+				
+			});
+		});
+	},
+};
+
+export const ReactLocalStorageService = {
+	set: (key, value) => {
+		try {
+			var index = getPrefix(key);
+			if (key) {
+				var a = value && typeof value === 'object' && value.constructor === Array;
+				var b = value && typeof value === 'object' && value.constructor === Object;
+				if (a || b) {
+					reactLocalStorage.setObject(index, value);
+				} else {
+					reactLocalStorage.set(index, value);
+				}
+				return true;
+			} else {
+				console.error('Required params key');
+				return false;
+			}
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
+		
+		
+	},
+	get: (key) => {
+		try {
+			var index = getPrefix(key);
+			if (key) {
+				var value;
+				var data = reactLocalStorage.get(index);
+				if (isJson(data)) {
+					value = JSON.parse(data);
+				} else {
+					value = data;
+				}
+				return value;
+			} else {
+				console.error('Required params key');
+				return false;
+			}
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
+	},
+	remove: (key) => {
+		var index = getPrefix(key);
+		return reactLocalStorage.remove(index);
+	},
+	clean: () => {
+		return reactLocalStorage.clear();
+	},
+};
+
+const getPrefix = (key) => {
+	return CONFIG.prefix + "." + key;
+};
+
+const isJson = (str) => {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		return false;
 	}
-	
-	if (FieldsJs.Field(datos.colonia) === true) {
-		direccion = direccion + datos.colonia + " ";
+	return true;
+};
+
+export const FileAction = {
+	Open: (file, tipo) => {
+		var format = file.split(".");
+		var fileURL = "";
+		var extension = format[format.length - 1];
+		if ((extension === "pdf" || extension === "docx" || extension === "xlsx" || extension === "csv" || extension === "text" || extension === "txt" || extension === "rar" || extension === "zip") || tipo === 'url') {
+			if (str_search(file, 'https://') || str_search(file, 'http://') || str_search(file, 'www.')) {
+				fileURL = file;
+			} else {
+				fileURL = CONFIG.src + file;
+			}
+		} else {
+			var files = new Blob([base64DecToArr(file)], {
+				type: 'application/pdf'
+			});
+			fileURL = URL.createObjectURL(files);
+		}
+		
+		if (fileURL === "") {
+			return;
+		}
+		
+		setTimeout(function () {
+			var aurldoc = document.createElement("a");
+			aurldoc.href = fileURL;
+			aurldoc.target = "_blank";
+			document.body.appendChild(aurldoc);
+			aurldoc.click();
+			aurldoc.remove();
+		}, 100);
 	}
-	
-	if (FieldsJs.Field(datos.codigo_postal) === true) {
-		direccion = direccion + "C.P. " + datos.codigo_postal + ", ";
-	}
-	
-	if (FieldsJs.Field(datos.municipio) === true) {
-		direccion = direccion + datos.municipio + ", ";
-	}
-	
-	if (FieldsJs.Field(datos.estado) === true) {
-		direccion = direccion + datos.estado + ".";
-	}
-	
-	return direccion;
+};
+
+function b64ToUint6(nChr) {
+	return nChr > 64 && nChr < 91 ? nChr - 65 : nChr > 96 && nChr < 123 ? nChr - 71 : nChr > 47 && nChr < 58 ? nChr + 4 : nChr === 43 ? 62 : nChr === 47 ? 63 : 0;
 }
+
+function base64DecToArr(sBase64, nBlocksSize) {
+	var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""),
+		nInLen = sB64Enc.length,
+		nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2,
+		taBytes = new Uint8Array(nOutLen);
+	
+	for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+		nMod4 = nInIdx & 3;
+		nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+		
+		if (nMod4 === 3 || nInLen - nInIdx === 1) {
+			for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+				taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+			}
+			
+			nUint24 = 0;
+		}
+	}
+	
+	return taBytes;
+}
+
+class $State {
+	go = (props, url, params) => {
+		let pA = [];
+		for (let x in params) {
+			pA.push(params[x]);
+		}
+		let pS = pA.join('/');
+		let g = '';
+		if (url) {
+			let u = '';
+			if (pS) {
+				u = '/' + url + '/' + pS
+			} else {
+				u = '/' + url
+			}
+			props.history.push(u);
+		}
+		return g;
+	};
+}
+
+export default withRouter(new $State());

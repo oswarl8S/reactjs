@@ -6,7 +6,7 @@ import Dialog from '@material-ui/core/Dialog/index';
 import DialogActions from '@material-ui/core/DialogActions/index';
 import DialogContent from '@material-ui/core/DialogContent/index';
 import DialogTitle from '@material-ui/core/DialogTitle/index';
-import {FileAction} from "../settings/FileAction/FileAction";
+import {FileAction} from "../settings/Libs/Libs";
 import {CONFIG} from "../settings/Config/Config";
 import {Icono} from "./Icono";
 

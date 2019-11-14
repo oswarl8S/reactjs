@@ -1,5 +1,5 @@
-import {HttpRequest} from '../../settings/HttpRequest/HttpRequest';
-import {ReactLocalStorageService} from '../../settings/ReactLocalStorageService/ReactLocalStorageService';
+import {HttpRequest} from '../../settings/Libs/Libs';
+import {ReactLocalStorageService} from '../../settings/Libs/Libs';
 
 export const LoginService = {
 	Login: (form) => {
