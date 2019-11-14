@@ -22,7 +22,7 @@ class ModalSexo extends Component {
 		this.state = {
 			open: false,
 			
-			id_sexo: '',
+			id_cat_sexo: '',
 			sexo: '',
 			activo: false,
 		};
@@ -33,11 +33,11 @@ class ModalSexo extends Component {
 		this.setState({
 			open: true,
 			
-			id_sexo: item.id_sexo || '',
+			id_cat_sexo: item.id_cat_sexo || '',
 			sexo: item.sexo || '',
 			activo: item.activo === 1,
 		});
-		if (item.id_sexo > 0) {
+		if (item.id_cat_sexo > 0) {
 			this.show(item);
 		}
 	};
@@ -46,7 +46,7 @@ class ModalSexo extends Component {
 		this.setState({
 			open: false,
 			
-			id_sexo: '',
+			id_cat_sexo: '',
 			sexo: '',
 			activo: false,
 		});
@@ -56,7 +56,7 @@ class ModalSexo extends Component {
 	show = (item) => {
 		SexoService.show(item).then(response => {
 			this.setState({
-				id_sexo: response.data.id_sexo || '',
+				id_cat_sexo: response.data.id_cat_sexo || '',
 				sexo: response.data.sexo || '',
 				activo: response.data.activo === 1,
 			});
@@ -66,7 +66,7 @@ class ModalSexo extends Component {
 	};
 	
 	save = () => {
-		if (this.state.id_sexo > 0) {
+		if (this.state.id_cat_sexo > 0) {
 			this.update();
 		} else {
 			this.create();
@@ -122,7 +122,7 @@ class ModalSexo extends Component {
 									variant="outlined"
 									fullWidth
 									disabled={true}
-									value={this.state.id_sexo}
+									value={this.state.id_cat_sexo}
 								/>
 							</Grid>
 							<Grid item xs={12} sm={12} md={12} lg={12} xl={12}>

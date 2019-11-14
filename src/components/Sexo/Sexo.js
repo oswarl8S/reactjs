@@ -60,7 +60,7 @@ class Sexo extends Component {
 				<table style={{width: '100%'}} border={1}>
 					<thead>
 					<tr>
-						<th>id_sexo</th>
+						<th>id_cat_sexo</th>
 						<th>sexo</th>
 						<th>activo</th>
 						<th>acciones</th>
@@ -69,7 +69,7 @@ class Sexo extends Component {
 					<tbody>
 					{this.state.lista.map((item, index) => (
 						<tr key={index}>
-							<td>{item.id_sexo}</td>
+							<td>{item.id_cat_sexo}</td>
 							<td>{item.sexo}</td>
 							<td>{item.activo}</td>
 							<td>

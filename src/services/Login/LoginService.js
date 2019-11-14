@@ -12,7 +12,7 @@ export const LoginService = {
 					token: response.data.token || '',
 					expiracion: response.data.expiracion || '',
 					username: response.data.username || '',
-					id_sexo: response.data.id_sexo || '',
+					id_cat_sexo: response.data.id_cat_sexo || '',
 					password: response.data.password || '',
 					id_usuario: response.data.id_usuario || '',
 					nombre: response.data.nombre || '',

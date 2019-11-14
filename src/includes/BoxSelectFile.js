@@ -44,13 +44,6 @@ class BoxSelectFile extends Component {
 	
 	render() {
 		
-		const clases = {
-			root: 'w-100 borde-punteado-danger-2 margin--1 bg-ghostwhite',
-			div01: 'vertical-inline w-100 h-100',
-			div02: 'v-center padding-0-T padding-0-B w-100 padding-10',
-			div03: 'text-center text-gray margin-5-T margin-0-B px-12',
-		};
-		
 		let style = {};
 		if (FieldsJs.isObject(this.props.style)) {
 			style = this.props.style;
@@ -64,8 +57,8 @@ class BoxSelectFile extends Component {
 		return (
 			<Fragment>
 				<div style={style}>
-					<div className={clases.div01}>
-						<div className={clases.div02} align={'center'}>
+					<div>
+						<div align={'center'}>
 							{this.props.item.archivo ? (
 								<Fragment>
 									<Tooltip TransitionComponent={Zoom} placement={"top"} title={'Ver documento'}>
@@ -151,7 +144,7 @@ class BoxSelectFile extends Component {
 								</Fragment>
 							)}
 							{this.props.label ? (
-								<Typography component={'div'} className={clases.div03} style={{lineHeight: '12px'}}>
+								<Typography component={'div'} style={{lineHeight: '12px'}}>
 									{this.props.label}
 								</Typography>
 							) : ''}

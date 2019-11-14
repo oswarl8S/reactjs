@@ -29,7 +29,7 @@ class UsuarioService {
 	static create = (form) => {
 		let params = {
 			id_usuario: null,
-			id_sexo: form.id_sexo,
+			id_cat_sexo: form.id_cat_sexo,
 			username: form.username,
 			password: form.password,
 			nombre: form.nombre,
@@ -50,7 +50,7 @@ class UsuarioService {
 	static update = (form) => {
 		let params = {
 			id_usuario: form.id_usuario,
-			id_sexo: form.id_sexo,
+			id_cat_sexo: form.id_cat_sexo,
 			username: form.username,
 			password: form.password,
 			nombre: form.nombre,

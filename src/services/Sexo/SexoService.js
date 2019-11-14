@@ -15,7 +15,7 @@ class SexoService {
 	
 	static show = (item) => {
 		let params = {
-			id_sexo: item.id_sexo
+			id_cat_sexo: item.id_cat_sexo
 		};
 		return new Promise((resolve, reject) => {
 			HttpRequest.post('_Sexo_Xid', params).then((response) => {
@@ -28,8 +28,8 @@ class SexoService {
 	
 	static create = (form) => {
 		let params = {
-			id_sexo: null,
-			sexo: form.sexo,
+			id_cat_sexo: null,
+			cat_sexo: form.cat_sexo,
 			activo: form.activo,
 		};
 		return new Promise((resolve, reject) => {
@@ -43,8 +43,8 @@ class SexoService {
 	
 	static update = (form) => {
 		let params = {
-			id_sexo: form.id_sexo,
-			sexo: form.sexo,
+			id_cat_sexo: form.id_cat_sexo,
+			cat_sexo: form.cat_sexo,
 			activo: form.activo,
 		};
 		return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ class SexoService {
 	
 	static delete = (item) => {
 		let params = {
-			id_sexo: item.id_sexo
+			id_cat_sexo: item.id_cat_sexo
 		};
 		return new Promise((resolve, reject) => {
 			HttpRequest.post('_Sexo_Eliminar', params).then((response) => {

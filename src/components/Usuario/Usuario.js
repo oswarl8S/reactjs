@@ -63,7 +63,7 @@ class Usuario extends Component {
 					<tr>
 						<th>id_usuario</th>
 						<th>foto</th>
-						<th>id_sexo</th>
+						<th>id_cat_sexo</th>
 						<th>username</th>
 						<th>password</th>
 						<th>nombre</th>
@@ -80,7 +80,7 @@ class Usuario extends Component {
 								<img src={CONFIG.src + item.foto} alt={item.id_usuario}
 								     style={{width: '50px', height: '50px'}}/>
 							</td>
-							<td>{item.id_sexo}</td>
+							<td>{item.id_cat_sexo}</td>
 							<td>{item.username}</td>
 							<td>{item.password}</td>
 							<td>{item.nombre}</td>

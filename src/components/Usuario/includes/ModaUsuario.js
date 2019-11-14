@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import UsuarioService from "../../../services/Usuario/UsuarioService";
 import BoxSelectFile from "../../../includes/BoxSelectFile";
+import SexoService from "../../../services/Sexo/SexoService";
 
 class ModalSexo extends Component {
 	
@@ -21,7 +22,7 @@ class ModalSexo extends Component {
 			open: false,
 			
 			id_usuario: '',
-			id_sexo: '',
+			id_cat_sexo: '',
 			username: '',
 			password: '',
 			nombre: '',
@@ -32,6 +33,8 @@ class ModalSexo extends Component {
 			foto_base64Tipo: '',
 			foto_archivo: '',
 			foto_formato: '',
+			
+			cat_sexo: [],
 		};
 	}
 	
@@ -41,7 +44,7 @@ class ModalSexo extends Component {
 			open: true,
 			
 			id_usuario: item.id_usuario || '',
-			id_sexo: item.id_sexo || '',
+			id_cat_sexo: item.id_cat_sexo || '',
 			username: item.username || '',
 			password: item.password || '',
 			nombre: item.nombre || '',
@@ -53,9 +56,16 @@ class ModalSexo extends Component {
 			foto_archivo: '',
 			foto_formato: '',
 		});
-		if (item.id_sexo > 0) {
+		if (item.id_cat_sexo > 0) {
 			this.show(item);
 		}
+		SexoService.all().then(response => {
+			this.setState({
+				cat_sexo: response.data
+			})
+		}).catch(error => {
+			alert(error.mensaje);
+		})
 	};
 	
 	close = () => {
@@ -63,7 +73,7 @@ class ModalSexo extends Component {
 			open: false,
 			
 			id_usuario: '',
-			id_sexo: '',
+			id_cat_sexo: '',
 			username: '',
 			password: '',
 			nombre: '',
@@ -82,7 +92,7 @@ class ModalSexo extends Component {
 		UsuarioService.show(item).then(response => {
 			this.setState({
 				id_usuario: response.data.id_usuario || '',
-				id_sexo: response.data.id_sexo || '',
+				id_cat_sexo: response.data.id_cat_sexo || '',
 				username: response.data.username || '',
 				password: response.data.password || '',
 				nombre: response.data.nombre || '',
@@ -194,19 +204,30 @@ class ModalSexo extends Component {
 							</Grid>
 							<Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
 								<TextField
+									select
 									label="Sexo"
-									type="text"
 									margin="normal"
 									variant="outlined"
 									fullWidth
-									value={this.state.id_sexo}
+									SelectProps={{
+										native: true,
+										MenuProps: {},
+									}}
+									value={this.state.id_cat_sexo}
 									onChange={(e) => {
 										this.setState({
-											id_sexo: e.target.value
-										});
+											id_cat_sexo: e.target.value
+										})
 									}}
 									disabled={this.props.tipo === 'view'}
-								/>
+								>
+									<option value={''}>&nbsp;</option>
+									{this.state.cat_sexo.map(option => (
+										<option key={option.id_cat_sexo} value={option.id_cat_sexo}>
+											{option.sexo}
+										</option>
+									))}
+								</TextField>
 							</Grid>
 							<Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
 								<TextField
