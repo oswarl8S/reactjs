@@ -149,9 +149,9 @@ class ModalSexo extends Component {
 												type="checkbox"
 												name='activo'
 												checked={this.state.activo}
-												onChange={() => {
+												onChange={(event, checked) => {
 													this.setState({
-														activo: e.target.checked
+														activo: checked
 													});
 												}}
 												value="activo"
