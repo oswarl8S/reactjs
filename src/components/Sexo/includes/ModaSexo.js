@@ -21,7 +21,7 @@ class ModalSexo extends Component {
 			
 			id_sexo: '',
 			sexo: '',
-			activo: '',
+			activo: false,
 		};
 	}
 	
@@ -32,7 +32,7 @@ class ModalSexo extends Component {
 			
 			id_sexo: item.id_sexo || '',
 			sexo: item.sexo || '',
-			activo: item.activo || '',
+			activo: item.activo === 1,
 		});
 		if (item.id_sexo > 0) {
 			this.show(item);
@@ -45,7 +45,7 @@ class ModalSexo extends Component {
 			
 			id_sexo: '',
 			sexo: '',
-			activo: '',
+			activo: false,
 		});
 	};
 	
@@ -55,7 +55,7 @@ class ModalSexo extends Component {
 			this.setState({
 				id_sexo: response.data.id_sexo || '',
 				sexo: response.data.sexo || '',
-				activo: response.data.activo || '',
+				activo: response.data.activo === 1,
 			});
 		}).catch(error => {
 			alert(error.mensaje);
@@ -139,20 +139,26 @@ class ModalSexo extends Component {
 								/>
 							</Grid>
 							<Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-								<TextField
-									label="Activo"
-									type="text"
-									margin="normal"
-									variant="outlined"
-									fullWidth
-									value={this.state.activo}
-									onChange={(e) => {
-										this.setState({
-											activo: e.target.value
-										});
-									}}
-									disabled={this.props.tipo === 'view'}
-								/>
+								<FormGroup row className={'margin-3-L'}>
+									<FormControlLabel
+										control={
+											<Checkbox
+												type="checkbox"
+												name='activo'
+												checked={this.state.activo}
+												onChange={() => {
+													this.setState({
+														activo: e.target.checked
+													});
+												}}
+												value="activo"
+												color="primary"
+												disabled={this.props.tipo === 'view'}
+											/>
+										}
+										label={this.state.activo ? 'Activo' : 'Inactivo'}
+									/>
+								</FormGroup>
 							</Grid>
 						</Grid>
 					</DialogContent>
