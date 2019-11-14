@@ -1,8 +1,7 @@
 import React, {Component, Fragment} from "react";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import {FileBase64} from "../settings/Libs/Libs";
-import {FieldsJs} from "../settings/Libs/Libs";
+import {FieldsJs, FileBase64} from "../settings/Libs/Libs";
 import ModalImage from "./ModalImage";
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -102,7 +101,12 @@ class BoxSelectFile extends Component {
 											</div>
 										</div>
 									) : (
-										<div style={{border: '1px solid black', width: '100px', borderRadius: '30px', cursos:'pointer'}}
+										<div style={{
+											border: '1px solid black',
+											width: '100px',
+											borderRadius: '30px',
+											cursos: 'pointer'
+										}}
 										     onClick={() => {
 											     if (!!!this.props.disabled) {
 												     this.ClickInputFile(this.state.id);
@@ -128,7 +132,12 @@ class BoxSelectFile extends Component {
 											</div>
 										</div>
 									) : (
-										<div style={{border: '1px solid black', width: '100px', borderRadius: '30px', cursos:'pointer'}}
+										<div style={{
+											border: '1px solid black',
+											width: '100px',
+											borderRadius: '30px',
+											cursos: 'pointer'
+										}}
 										     onClick={() => {
 											     if (!!!this.props.disabled) {
 												     this.ClickInputFile(this.state.id);

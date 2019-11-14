@@ -176,7 +176,8 @@ class ModalSexo extends Component {
 											foto_formato: r.formato,
 										});
 									}}
-									showSnackBars={() => {}}
+									showSnackBars={() => {
+									}}
 									disabled={this.state.tipo === 'view'}
 								/>
 							</Grid>

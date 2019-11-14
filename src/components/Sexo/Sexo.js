@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react';
 import SexoService from "../../services/Sexo/SexoService";
 import Header from "../../includes/Header";
 
-import {DeleteOutlined, EditOutlined, SearchOutlined, AddOutlined} from '@material-ui/icons';
+import {AddOutlined, DeleteOutlined, EditOutlined, SearchOutlined} from '@material-ui/icons';
 
 import BotonFlotante from "../../includes/BotonFlotante";
 import ModalSexo from "./includes/ModaSexo";
@@ -100,7 +100,7 @@ class Sexo extends Component {
 					RefrechList={this.RefrechList}
 					componente={<BotonFlotante icono={<AddOutlined/>}/>}
 				/>
-				
+			
 			</Fragment>
 		);
 	}

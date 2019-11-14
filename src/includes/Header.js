@@ -2,21 +2,19 @@ import React, {Component, Fragment} from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import {MenuOutlined} from "@material-ui/icons";
+import {HomeOutlined, ListAltOutlined, MenuOutlined, PersonOutlined} from "@material-ui/icons";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import $State from '../settings/Libs/Libs';
+import $State, {ReactLocalStorageService} from '../settings/Libs/Libs';
 import Drawer from "@material-ui/core/Drawer";
-import {ListAltOutlined, HomeOutlined, PersonOutlined} from "@material-ui/icons";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import {ReactLocalStorageService} from "../settings/Libs/Libs";
 
 class Header extends Component {
 	
-	state= {};
+	state = {};
 	
 	constructor(props) {
 		super(props);
@@ -88,22 +86,22 @@ class Header extends Component {
 							<ListItemIcon>
 								<HomeOutlined/>
 							</ListItemIcon>
-							<ListItemText primary={'Principal'} />
+							<ListItemText primary={'Principal'}/>
 						</ListItem>
 						<ListItem button onClick={this.Sexo}>
 							<ListItemIcon>
 								<ListAltOutlined/>
 							</ListItemIcon>
-							<ListItemText primary={'Sexo'} />
+							<ListItemText primary={'Sexo'}/>
 						</ListItem>
 						<ListItem button onClick={this.Usuario}>
 							<ListItemIcon>
 								<PersonOutlined/>
 							</ListItemIcon>
-							<ListItemText primary={'Usuario'} />
+							<ListItemText primary={'Usuario'}/>
 						</ListItem>
 					</List>
-					
+				
 				</Drawer>
 			</Fragment>
 		);

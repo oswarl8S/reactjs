@@ -13,7 +13,7 @@ import $State from '../../settings/Libs/Libs';
 import {LoginService} from "../../services/Login/LoginService";
 
 
-class Login extends Component{
+class Login extends Component {
 	
 	state = {};
 	
@@ -25,7 +25,7 @@ class Login extends Component{
 		};
 	}
 	
-	login = ()  => {
+	login = () => {
 		LoginService.Login(this.state).then(response => {
 			$State.go(this.props, 'home', {nombre: response.data.username})
 		}).catch(error => {
@@ -60,7 +60,7 @@ class Login extends Component{
 											margin="normal"
 											variant="outlined"
 											fullWidth
-											onChange={(e) =>{
+											onChange={(e) => {
 												this.setState({
 													username: e.target.value
 												});
@@ -75,7 +75,7 @@ class Login extends Component{
 											margin="normal"
 											variant="outlined"
 											fullWidth
-											onChange={(e) =>{
+											onChange={(e) => {
 												this.setState({
 													password: e.target.value
 												});
@@ -91,7 +91,7 @@ class Login extends Component{
 						</Card>
 					</Grid>
 				</Grid>
-				
+			
 			</Fragment>
 		);
 	}

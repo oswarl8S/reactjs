@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react';
 import UsuarioService from "../../services/Usuario/UsuarioService";
 import Header from "../../includes/Header";
 
-import {DeleteOutlined, EditOutlined, SearchOutlined, AddOutlined} from '@material-ui/icons';
+import {AddOutlined, DeleteOutlined, EditOutlined, SearchOutlined} from '@material-ui/icons';
 
 import BotonFlotante from "../../includes/BotonFlotante";
 import ModalUsuario from "./includes/ModaUsuario";
@@ -77,7 +77,8 @@ class Usuario extends Component {
 						<tr key={index}>
 							<td>{item.id_usuario}</td>
 							<td>
-								<img src={CONFIG.src + item.foto} alt={item.id_usuario} style={{width: '50px', height: '50px'}}/>
+								<img src={CONFIG.src + item.foto} alt={item.id_usuario}
+								     style={{width: '50px', height: '50px'}}/>
 							</td>
 							<td>{item.id_sexo}</td>
 							<td>{item.username}</td>
@@ -113,7 +114,7 @@ class Usuario extends Component {
 					RefrechList={this.RefrechList}
 					componente={<BotonFlotante icono={<AddOutlined/>}/>}
 				/>
-				
+			
 			</Fragment>
 		);
 	}
