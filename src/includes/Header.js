@@ -55,7 +55,7 @@ class Header extends Component {
 	
 	render() {
 		
-		let Usr = ReactLocalStorageService.get('Usr');
+		let Usr = ReactLocalStorageService.get('Usr') || {};
 		
 		return (
 			<Fragment>
