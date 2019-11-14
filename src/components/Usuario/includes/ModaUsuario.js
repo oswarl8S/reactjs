@@ -222,9 +222,9 @@ class ModalSexo extends Component {
 									disabled={this.props.tipo === 'view'}
 								>
 									<option value={''}>&nbsp;</option>
-									{this.state.cat_sexo.map(option => (
-										<option key={option.id_cat_sexo} value={option.id_cat_sexo}>
-											{option.sexo}
+									{this.state.cat_sexo.map((item, index) => (
+										<option key={index} value={item.id_cat_sexo}>
+											{item.sexo}
 										</option>
 									))}
 								</TextField>
