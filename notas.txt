@@ -36,5 +36,5 @@ Entrar a CMD o en la Terminal
 Carpetas y archivos principales:
 - archivo Header.js: Se definen los items del menu
 - archivo route.js: se incluyen las vistas de la carpeta components, si no se hace no se mostrara la vista
-- carpeta components: vistas, haen uso de la carpeta service
+- carpeta components: vistas, hacen uso de la carpeta service
 - carpeta services: funciones para conectar a la api
