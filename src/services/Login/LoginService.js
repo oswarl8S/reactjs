@@ -1,7 +1,8 @@
 import {HttpRequest, ReactLocalStorageService} from '../../settings/Libs/Libs';
 
-export const LoginService = {
-	Login: (form) => {
+class LoginService {
+	
+	static Login = (form) => {
 		let params = {
 			username: form.username,
 			password: form.password,
@@ -25,5 +26,8 @@ export const LoginService = {
 				reject(error);
 			});
 		});
-	}
-};
+	};
+	
+}
+
+export default LoginService;

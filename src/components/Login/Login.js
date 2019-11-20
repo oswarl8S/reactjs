@@ -9,8 +9,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import $State from '../../settings/Libs/Libs';
-import {LoginService} from "../../services/Login/LoginService";
+import $State, {FieldsJs} from '../../settings/Libs/Libs';
+import LoginService from "../../services/Login/LoginService";
 
 
 class Login extends Component {
@@ -29,6 +29,7 @@ class Login extends Component {
 		LoginService.Login(this.state).then(response => {
 			$State.go(this.props, 'home', {nombre: response.data.username})
 		}).catch(error => {
+			console.log(error);
 			alert(error.mensaje)
 		});
 	};
