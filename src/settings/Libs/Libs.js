@@ -5,86 +5,6 @@ import {reactLocalStorage} from 'reactjs-localstorage';
 import axios from 'axios/index';
 
 
-export const FirstError = (response) => {
-	var Array_Log_Error = [];
-	
-	if (FieldsJs.Array(response.errors)) {
-		Array_Log_Error = FieldsJs.Copy(response.errors);
-	}
-	var msger = "";
-	
-	if (FieldsJs.Field(response.mensaje)) {
-		msger = response.mensaje;
-	} else if (FieldsJs.Field(response.message)) {
-		msger = response.message;
-	}
-	
-	if (FieldsJs.Array(Array_Log_Error)) {
-		var band = true;
-		for (let ix in Array_Log_Error) {
-			let Item_Error = Array_Log_Error[ix];
-			if (FieldsJs.Array(Item_Error) === true) {
-				for (let b = 0; b < Item_Error.length; b++) {
-					let itemE = Item_Error[b];
-					if (band === true) {
-						if (FieldsJs.isArray(itemE)) {
-							for (let c = 0; c < itemE.length; c++) {
-								let itemZ = itemE[c];
-								if (FieldsJs.isString(itemZ)) {
-									msger = itemZ;
-									band = false;
-								} else if (FieldsJs.isObject(itemZ)) {
-									for (let i in itemZ) {
-										let itemY = itemZ[i];
-										msger = itemY;
-										band = false;
-									}
-								} else if (FieldsJs.isArray(itemZ)) {
-									msger = itemZ[0];
-									band = false;
-								}
-							}
-						} else if (FieldsJs.isObject(itemE)) {
-							for (let i in itemE) {
-								let itemZ = itemE[i];
-								msger = itemZ;
-								band = false;
-							}
-						} else if (FieldsJs.isString(itemE)) {
-							msger = itemE;
-							band = false;
-						}
-					}
-				}
-			} else {
-				if (FieldsJs.isString(Item_Error)) {
-					msger = Item_Error;
-				}
-			}
-		}
-	} else {
-		if (FieldsJs.isString(Array_Log_Error)) {
-			msger = Array_Log_Error;
-		}
-	}
-	
-	return FieldsJs.FirstMayus(msger || 'Error al procesar los datos.');
-};
-
-export const showSpinner = (id) => {
-	document.getElementById(id || "spinner").style.display = 'flex';
-};
-
-export const hideSpinner = (id, time) => {
-	if (!time) {
-		time = 1000;
-	}
-	setTimeout(() => {
-		document.getElementById(id || "spinner").style.display = 'none';
-	}, time);
-	
-};
-
 export const $cLog = (string, color, background) => {
 	var _string;
 	if (FieldsJs.isObject(string) || FieldsJs.isArray(string)) {
@@ -286,8 +206,166 @@ export const isEnter = (e) => {
 	return key === 13;
 };
 
-export const FileBase64 = {
-	Base64: (element, formatos, MegaByte) => {
+export const imprimir = (strung, obj, type) => {
+	let dato = [];
+	if (type) {
+		dato = [
+			"%c%s%c%s\n",
+			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
+			" " + strung,
+			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
+			obj
+		];
+		window.console.log(
+			dato[0],
+			dato[1],
+			dato[2],
+			dato[3],
+			JSON.stringify(dato[4], null, 2)
+		);
+	} else {
+		dato = [
+			"%c%s%c\n",
+			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
+			" " + strung,
+			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
+			obj
+		];
+		window.console.log(
+			dato[0],
+			dato[1],
+			dato[2],
+			dato[3],
+			dato[4]
+		);
+	}
+};
+
+export const getPrefix = (key) => {
+	return CONFIG.prefix + "." + key;
+};
+
+export const isJson = (str) => {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		return false;
+	}
+	return true;
+};
+
+export const b64ToUint6 = (nChr) => {
+	return nChr > 64 && nChr < 91 ? nChr - 65 : nChr > 96 && nChr < 123 ? nChr - 71 : nChr > 47 && nChr < 58 ? nChr + 4 : nChr === 43 ? 62 : nChr === 47 ? 63 : 0;
+};
+
+export const base64DecToArr = (sBase64, nBlocksSize) => {
+	var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""),
+		nInLen = sB64Enc.length,
+		nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2,
+		taBytes = new Uint8Array(nOutLen);
+	
+	for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+		nMod4 = nInIdx & 3;
+		nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+		
+		if (nMod4 === 3 || nInLen - nInIdx === 1) {
+			for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+				taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+			}
+			
+			nUint24 = 0;
+		}
+	}
+	
+	return taBytes;
+};
+
+export const FirstError = (response) => {
+	var Array_Log_Error = [];
+	
+	if (FieldsJs.Array(response.errors)) {
+		Array_Log_Error = FieldsJs.Copy(response.errors);
+	}
+	var msger = "";
+	
+	if (FieldsJs.Field(response.mensaje)) {
+		msger = response.mensaje;
+	} else if (FieldsJs.Field(response.message)) {
+		msger = response.message;
+	}
+	
+	if (FieldsJs.Array(Array_Log_Error)) {
+		var band = true;
+		for (let ix in Array_Log_Error) {
+			let Item_Error = Array_Log_Error[ix];
+			if (FieldsJs.Array(Item_Error) === true) {
+				for (let b = 0; b < Item_Error.length; b++) {
+					let itemE = Item_Error[b];
+					if (band === true) {
+						if (FieldsJs.isArray(itemE)) {
+							for (let c = 0; c < itemE.length; c++) {
+								let itemZ = itemE[c];
+								if (FieldsJs.isString(itemZ)) {
+									msger = itemZ;
+									band = false;
+								} else if (FieldsJs.isObject(itemZ)) {
+									for (let i in itemZ) {
+										let itemY = itemZ[i];
+										msger = itemY;
+										band = false;
+									}
+								} else if (FieldsJs.isArray(itemZ)) {
+									msger = itemZ[0];
+									band = false;
+								}
+							}
+						} else if (FieldsJs.isObject(itemE)) {
+							for (let i in itemE) {
+								let itemZ = itemE[i];
+								msger = itemZ;
+								band = false;
+							}
+						} else if (FieldsJs.isString(itemE)) {
+							msger = itemE;
+							band = false;
+						}
+					}
+				}
+			} else {
+				if (FieldsJs.isString(Item_Error)) {
+					msger = Item_Error;
+				}
+			}
+		}
+	} else {
+		if (FieldsJs.isString(Array_Log_Error)) {
+			msger = Array_Log_Error;
+		}
+	}
+	
+	return FieldsJs.FirstMayus(msger || 'Error al procesar los datos.');
+};
+
+export const showSpinner = (id) => {
+	document.getElementById(id || "spinner").style.display = 'flex';
+};
+
+export const hideSpinner = (id, time) => {
+	if (!time) {
+		time = 1000;
+	}
+	setTimeout(() => {
+		document.getElementById(id || "spinner").style.display = 'none';
+	}, time);
+	
+};
+
+/*
+* Libreria de clases utiles
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+export class FileBase64 {
+	static Base64 = (element, formatos, MegaByte) => {
 		return new Promise((resolve, reject) => {
 			let files = {};
 			let archivos = element.files;
@@ -396,299 +474,11 @@ export const FileBase64 = {
 				reject(error);
 			}
 		});
-	}
-};
+	};
+}
 
-export const imprimir = (strung, obj, type) => {
-	let dato = [];
-	if (type) {
-		dato = [
-			"%c%s%c%s\n",
-			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
-			" " + strung,
-			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
-			obj
-		];
-		window.console.log(
-			dato[0],
-			dato[1],
-			dato[2],
-			dato[3],
-			JSON.stringify(dato[4], null, 2)
-		);
-	} else {
-		dato = [
-			"%c%s%c\n",
-			"color: white; background: gray; font-size: 12px;font-weight: bold;letter-spacing: 10px;",
-			" " + strung,
-			"color: #30568C; background: #FAFAFA; font-size: 12px;font-weight: bold;",
-			obj
-		];
-		window.console.log(
-			dato[0],
-			dato[1],
-			dato[2],
-			dato[3],
-			dato[4]
-		);
-	}
-};
-
-export const ErrorMessageServerRequest = {
-	
-	GetMessage: (response, $PROMISSESUCCESS, $PROMISSEERROR) => {
-		var msgerrorserver = "";
-		
-		if (FieldsJs.Field(response.error) === true) {
-			if (!FieldsJs.Array(response.error)) {
-				var errorserver = response.error.split("::");
-				msgerrorserver += (errorserver[1] ? errorserver[1] : response.error) + " ";
-			}
-		}
-		
-		if (FieldsJs.Field(response.file) === true) {
-			var fileserver = response.file.split("/");
-			msgerrorserver += fileserver[fileserver.length - 1] + " ";
-		}
-		
-		if (FieldsJs.Field(response.line) === true) {
-			msgerrorserver += response.line;
-		}
-		
-		if (msgerrorserver) {
-			
-			let msg = "ADVERTENCIA: " + msgerrorserver;
-			
-			$PROMISSEERROR({
-				success: false,
-				codigo_api: 400,
-				mensaje: FieldsJs.FirstMayus(msg),
-				response: response
-			});
-			
-		} else {
-			
-			if (response.success === true) {
-				
-				let msg = FirstError(response);
-				
-				response.mensaje = FieldsJs.FirstMayus(msg);
-				
-				$PROMISSESUCCESS(response);
-				
-			} else {
-				
-				let msg = FirstError(response);
-				
-				$PROMISSEERROR({
-					success: false,
-					codigo_api: 400,
-					mensaje: FieldsJs.FirstMayus(msg),
-					response: response
-				});
-				
-			}
-		}
-	}
-};
-
-export const HttpRequest = {
-	post: (ws, params, setting, time) => {
-		
-		if (!(time > 0)) {
-			time = 500;
-		}
-		
-		if (!FieldsJs.Array(setting)) {
-			setting = {};
-		}
-		
-		setting.authentication = (setting.authentication === true || setting.authentication === undefined || setting.authentication === null);
-		setting.spinner = (setting.spinner === true || setting.spinner === undefined || setting.spinner === null);
-		
-		let data = {};
-		
-		if (setting.authentication) {
-			let Usr = ReactLocalStorageService.get('Usr') || {};
-			data = {
-				token: Usr.token || '',
-				credenciales: {
-					id_usuario: Usr.id_usuario || '',
-					username: Usr.username || ''
-				},
-				data: {}
-			};
-		} else {
-			data = {
-				data: {}
-			};
-		}
-		
-		if (FieldsJs.Array(params)) {
-			for (let i in params) {
-				data.data[i] = params[i];
-			}
-		}
-		
-		if (CONFIG.debug) {
-			console.log("W E B S E R V I C E   &   D A T A [POST]:\n\n" + CONFIG.api + ws + "\n" + JSON.stringify(data, null, 2) + '\n');
-		}
-		
-		if (setting.spinner) {
-			showSpinner('spinner');
-		}
-		
-		return new Promise((resolve, reject) => {
-			axios.post(CONFIG.api + ws, data, {
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				timeout: undefined,
-			}).then(response => {
-				
-				if (setting.spinner) {
-					hideSpinner('spinner', time);
-				}
-				
-				let respuesta = FieldsJs.Copy(response.data);
-				
-				if (CONFIG.debug) {
-					imprimir("R E S P O N S E [POST::" + ws + "]:\n", response.data, false);
-				}
-				
-				ErrorMessageServerRequest.GetMessage(respuesta, function (result) {
-					resolve(result);
-				}, function (error) {
-					reject(error);
-				});
-				
-			}).catch(function (error) {
-				
-				if (setting.spinner) {
-					hideSpinner('spinner', time);
-				}
-				
-				let errors = {};
-				
-				if (!error) {
-					errors = {
-						success: false,
-						codigo_api: 400,
-						mensaje: "Error al procesar los datos",
-						error: error
-					}
-				} else {
-					errors = {
-						success: false,
-						codigo_api: 400,
-						mensaje: "Error al procesar los datos",
-						error: error
-					}
-				}
-				
-				if (CONFIG.debug) {
-					window.console.error(errors);
-				}
-				
-				reject(errors);
-				
-			});
-		});
-	},
-	get: (ws, params, setting, time) => {
-		
-		if (!(time > 0)) {
-			time = 500;
-		}
-		
-		if (!FieldsJs.Array(setting)) {
-			setting = {};
-		}
-		
-		setting.spinner = !(setting.spinner === false || setting.spinner === undefined || setting.spinner === null);
-		
-		let temp = [];
-		
-		if (FieldsJs.Array(params)) {
-			for (let i in params) {
-				temp.push(i + '=' + params[i]);
-			}
-		}
-		
-		let data = temp.join('&');
-		
-		let urls = '';
-		
-		if (FieldsJs.Field(data)) {
-			urls = CONFIG.api + ws + '?' + data;
-		} else {
-			urls = CONFIG.api + ws;
-		}
-		
-		if (CONFIG.debug) {
-			$cSuccess(urls);
-		}
-		
-		if (setting.spinner) {
-			showSpinner('spinner');
-		}
-		
-		return new Promise((resolve, reject) => {
-			axios.get(urls).then(response => {
-				
-				if (setting.spinner) {
-					hideSpinner('spinner', time);
-				}
-				
-				let respuesta = response.data;
-				
-				if (CONFIG.debug) {
-					window.console.log("R E S P O N S E [GET::" + urls + "]:\n", FieldsJs.Copy(respuesta));
-				}
-				
-				ErrorMessageServerRequest.GetMessage(respuesta, function (result) {
-					resolve(result);
-				}, function (error) {
-					reject(error);
-				});
-				
-			}).catch(function (error) {
-				
-				if (setting.spinner) {
-					hideSpinner('spinner', time);
-				}
-				
-				let errors = {};
-				
-				if (!error) {
-					errors = {
-						success: false,
-						codigo_api: 400,
-						mensaje: "Error al procesar los datos",
-						error: error
-					}
-				} else {
-					errors = {
-						success: false,
-						codigo_api: 400,
-						mensaje: "Error al procesar los datos",
-						error: error
-					}
-				}
-				
-				if (CONFIG.debug) {
-					window.console.error(errors);
-				}
-				
-				reject(errors);
-				
-			});
-		});
-	},
-};
-
-export const ReactLocalStorageService = {
-	set: (key, value) => {
+export class ReactLocalStorageService {
+	static set = (key, value) => {
 		try {
 			var index = getPrefix(key);
 			if (key) {
@@ -708,8 +498,8 @@ export const ReactLocalStorageService = {
 			console.error(e);
 			return false;
 		}
-	},
-	get: (key) => {
+	};
+	static get = (key) => {
 		try {
 			var index = getPrefix(key);
 			if (key) {
@@ -729,31 +519,18 @@ export const ReactLocalStorageService = {
 			console.error(e);
 			return false;
 		}
-	},
-	remove: (key) => {
+	};
+	static remove = (key) => {
 		var index = getPrefix(key);
 		return reactLocalStorage.remove(index);
-	},
-	clean: () => {
+	};
+	static clean = () => {
 		return reactLocalStorage.clear();
-	},
+	};
 };
 
-export const getPrefix = (key) => {
-	return CONFIG.prefix + "." + key;
-};
-
-export const isJson = (str) => {
-	try {
-		JSON.parse(str);
-	} catch (e) {
-		return false;
-	}
-	return true;
-};
-
-export const FileAction = {
-	Open: (file, tipo) => {
+export class FileAction {
+	static Open = (file, tipo) => {
 		var format = file.split(".");
 		var fileURL = "";
 		var extension = format[format.length - 1];
@@ -782,41 +559,15 @@ export const FileAction = {
 			aurldoc.click();
 			aurldoc.remove();
 		}, 100);
-	}
-};
-
-export const b64ToUint6 = (nChr) => {
-	return nChr > 64 && nChr < 91 ? nChr - 65 : nChr > 96 && nChr < 123 ? nChr - 71 : nChr > 47 && nChr < 58 ? nChr + 4 : nChr === 43 ? 62 : nChr === 47 ? 63 : 0;
-};
-
-export const base64DecToArr = (sBase64, nBlocksSize) => {
-	var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""),
-		nInLen = sB64Enc.length,
-		nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2,
-		taBytes = new Uint8Array(nOutLen);
-	
-	for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
-		nMod4 = nInIdx & 3;
-		nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
-		
-		if (nMod4 === 3 || nInLen - nInIdx === 1) {
-			for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
-				taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
-			}
-			
-			nUint24 = 0;
-		}
-	}
-	
-	return taBytes;
-};
-
-
+	};
+}
 
 export class FieldsJs {
 	static timeout = null;
 	
-	static isBoolean = () => {};
+	static isBoolean = (variable_string_name) => {
+		return (typeof variable_string_name === "boolean") && (variable_string_name === true || variable_string_name === false);
+	};
 	
 	static isObject = (obj) => {
 		return obj && typeof obj === 'object' && obj.constructor === Object;
@@ -1193,6 +944,256 @@ export class FieldsJs {
 		let j;
 		j = (j = i.length) > 3 ? j % 3 : 0;
 		return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+	};
+}
+
+export class HttpRequest {
+	static post = (ws, params, setting, time) => {
+		
+		if (!(time > 0)) {
+			time = 500;
+		}
+		
+		if (!FieldsJs.Array(setting)) {
+			setting = {};
+		}
+		
+		setting.authentication = (setting.authentication === true || setting.authentication === undefined || setting.authentication === null);
+		setting.spinner = (setting.spinner === true || setting.spinner === undefined || setting.spinner === null);
+		
+		let data = {};
+		
+		if (setting.authentication) {
+			let Usr = ReactLocalStorageService.get('Usr') || {};
+			data = {
+				token: Usr.token || '',
+				credenciales: {
+					id_usuario: Usr.id_usuario || '',
+					username: Usr.username || ''
+				},
+				data: {}
+			};
+		} else {
+			data = {
+				data: {}
+			};
+		}
+		
+		if (FieldsJs.Array(params)) {
+			for (let i in params) {
+				data.data[i] = params[i];
+			}
+		}
+		
+		if (CONFIG.debug) {
+			console.log("W E B S E R V I C E   &   D A T A [POST]:\n\n" + CONFIG.api + ws + "\n" + JSON.stringify(data, null, 2) + '\n');
+		}
+		
+		if (setting.spinner) {
+			showSpinner('spinner');
+		}
+		
+		return new Promise((resolve, reject) => {
+			axios.post(CONFIG.api + ws, data, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				timeout: undefined,
+			}).then(response => {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let respuesta = FieldsJs.Copy(response.data);
+				
+				if (CONFIG.debug) {
+					imprimir("R E S P O N S E [POST::" + ws + "]:\n", response.data, false);
+				}
+				
+				this.GetErrorMessageServerRequest(respuesta, function (result) {
+					resolve(result);
+				}, function (error) {
+					reject(error);
+				});
+				
+			}).catch(function (error) {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let errors = {};
+				
+				if (!error) {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				} else {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				}
+				
+				if (CONFIG.debug) {
+					window.console.error(errors);
+				}
+				
+				reject(errors);
+				
+			});
+		});
+	};
+	static get = (ws, params, setting, time) => {
+		
+		if (!(time > 0)) {
+			time = 500;
+		}
+		
+		if (!FieldsJs.Array(setting)) {
+			setting = {};
+		}
+		
+		setting.spinner = !(setting.spinner === false || setting.spinner === undefined || setting.spinner === null);
+		
+		let temp = [];
+		
+		if (FieldsJs.Array(params)) {
+			for (let i in params) {
+				temp.push(i + '=' + params[i]);
+			}
+		}
+		
+		let data = temp.join('&');
+		
+		let urls = '';
+		
+		if (FieldsJs.Field(data)) {
+			urls = CONFIG.api + ws + '?' + data;
+		} else {
+			urls = CONFIG.api + ws;
+		}
+		
+		if (CONFIG.debug) {
+			$cSuccess(urls);
+		}
+		
+		if (setting.spinner) {
+			showSpinner('spinner');
+		}
+		
+		return new Promise((resolve, reject) => {
+			axios.get(urls).then(response => {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let respuesta = response.data;
+				
+				if (CONFIG.debug) {
+					window.console.log("R E S P O N S E [GET::" + urls + "]:\n", FieldsJs.Copy(respuesta));
+				}
+				
+				this.GetErrorMessageServerRequest(respuesta, function (result) {
+					resolve(result);
+				}, function (error) {
+					reject(error);
+				});
+				
+			}).catch(function (error) {
+				
+				if (setting.spinner) {
+					hideSpinner('spinner', time);
+				}
+				
+				let errors = {};
+				
+				if (!error) {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				} else {
+					errors = {
+						success: false,
+						codigo_api: 400,
+						mensaje: "Error al procesar los datos",
+						error: error
+					}
+				}
+				
+				if (CONFIG.debug) {
+					window.console.error(errors);
+				}
+				
+				reject(errors);
+				
+			});
+		});
+	};
+	
+	static GetErrorMessageServerRequest = (response, $PROMISSESUCCESS, $PROMISSEERROR) => {
+		var msgerrorserver = "";
+		
+		if (FieldsJs.Field(response.error) === true) {
+			if (!FieldsJs.Array(response.error)) {
+				var errorserver = response.error.split("::");
+				msgerrorserver += (errorserver[1] ? errorserver[1] : response.error) + " ";
+			}
+		}
+		
+		if (FieldsJs.Field(response.file) === true) {
+			var fileserver = response.file.split("/");
+			msgerrorserver += fileserver[fileserver.length - 1] + " ";
+		}
+		
+		if (FieldsJs.Field(response.line) === true) {
+			msgerrorserver += response.line;
+		}
+		
+		if (msgerrorserver) {
+			
+			let msg = "ADVERTENCIA: " + msgerrorserver;
+			
+			$PROMISSEERROR({
+				success: false,
+				codigo_api: 400,
+				mensaje: FieldsJs.FirstMayus(msg),
+				response: response
+			});
+			
+		} else {
+			
+			if (response.success === true) {
+				
+				let msg = FirstError(response);
+				
+				response.mensaje = FieldsJs.FirstMayus(msg);
+				
+				$PROMISSESUCCESS(response);
+				
+			} else {
+				
+				let msg = FirstError(response);
+				
+				$PROMISSEERROR({
+					success: false,
+					codigo_api: 400,
+					mensaje: FieldsJs.FirstMayus(msg),
+					response: response
+				});
+				
+			}
+		}
 	};
 }
 
